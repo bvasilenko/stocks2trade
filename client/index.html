@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+  <head>
+    <title>Stocks2trade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-responsive.min.css">
+    <style>
+      body {
+        padding-top: 60px;
+      }
+    </style>
+  </head>
+  <body class="ng-cloak">
+    <div class="container" ng-controller="AppController">
+      <!--<div class="navbar navbar-fixed-top navbar-inverse">-->
+      <!--  <div class="navbar-inner">-->
+      <!--    <div class="pull-right">-->
+      <!--      <a href="https://c9.io" class="brand">Cloud9 IDE</a>-->
+      <!--    </div>-->
+      <!--  </div>-->
+      <!--</div>-->
+      <div class="page-header">
+        <h1>Stocks 2 Trade</h1>
+      </div>
+      <div class="row">
+        <div ng-if="!links">Loading. Please wait...</div>
+        <div class="span12" ng-repeat="link in links">
+          <p>
+            <br /><strong>{{date | date}}</strong>
+            <br />{{link.description}}
+            <br /><a ng-href="{{link.src}}">{{link.text}}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script>
+    /*global angular*/
+    /*global localStorage*/
+    angular
+    .module('app', [])
+    .controller('AppController', ['$scope', '$http',
+      function AppController($scope, $http) {
+        
+        function getLinks(key) {
+          return new Promise(resolve => {
+            let links = localStorage.getItem(key);
+            if (links) {
+              resolve(JSON.parse(links));
+            } else {
+              $http.get('/api/v1/links').then(response => {
+                localStorage.setItem(key, JSON.stringify(response.data.links));
+                resolve(response.data.links);
+              });
+            }
+          });
+        }
+        
+        let key = Math.floor(Date.now() / 4 /*hours*/ / 3600000);
+        getLinks(key).then(links => {
+          $scope.$evalAsync(() => {
+            $scope.links = links;
+            $scope.date = Date.now();  
+          });
+        });
+      }
+    ]);
+    </script>
+  </body>
+</html>
