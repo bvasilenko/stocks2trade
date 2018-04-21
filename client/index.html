@@ -3,11 +3,10 @@
   <head>
     <title>Stocks2trade</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
       body {
-        padding-top: 60px;
+        
       }
     </style>
   </head>
@@ -21,21 +20,78 @@
       <!--  </div>-->
       <!--</div>-->
       <div class="page-header">
+        
+        <select class="pull-right" name="mknum" ng-model="mknum" ng-change="getLinks()">
+          <option value="211">S&amp;P 100
+      		</option><option value="210">S&amp;P Energy 
+      		</option><option value="215">S&amp;P Materials
+      		</option><option value="220">S&amp;P Industrials 
+      		</option><option value="225">S&amp;P Consumer Discret
+      		</option><option value="230">S&amp;P Consumer Staples 
+      		</option><option value="235">S&amp;P Health Care 
+      		</option><option value="240">S&amp;P Financials
+      		</option><option value="245">S&amp;P Information Tech 
+      		</option><option value="250">S&amp;P Telecom Services 
+      		</option><option value="255">S&amp;P Utilities  
+      		</option><option value="101">Nasdaq 100 
+      		</option><option value="102">Nasdaq Industrial 
+      		</option><option value="103">Nasdaq Transport
+      		</option><option value="107">Nasdaq Financial 100
+      		</option><option value="108">Nasdaq Bank
+      		</option><option value="109">Nasdaq Computer
+      		</option><option value="110">Nasdaq Other Finance 
+      		</option><option value="111">Nasdaq Insurance
+      		</option><option value="112">Nasdaq Biotech 
+      		</option><option value="113">Nasdaq Telecom
+          </option><option value="0">All USA Exchange
+      		</option><option value="1">AMEX
+      		</option><option value="3">NASDAQ
+      		</option><option value="17">Nasdaq NM
+      		</option><option value="16">Nasdaq SC
+      		</option><option value="4">NYSE
+      		</option><option value="1000">Furtune 1000			
+      		</option><option value="31">Russell 1000
+      		</option><option value="30">Russell 2000
+      		</option><option value="32">Russell 3000
+    			</option><option value="120">ETFs Stocks 
+    			</option><option value="888">Closed End Funds 
+    			</option><option value="999">ADRs Stocks 
+      		</option><option value="11">S&amp;P 500
+      		</option><option value="12">S&amp;P Mid-Cap 
+      		</option><option value="13">S&amp;P Small-Cap
+      		</option><option value="2">All USA Indices
+      		</option><option value="20">IPOs from Jan, 05
+      		</option><option value="14">Nasdaq OTC BB
+      		</option><option value="15">Nasdaq OTC Other
+      		</option><option value="5">Toronto Exchange
+      		</option><option value="6">CDNX
+      		</option><option value="7">TSE 300
+      		</option><option value="9">All Canadian Exchange
+				</option></select>
+        
         <h1>Stocks 2 Trade</h1>
       </div>
-      <div class="row">
-        <div ng-if="!links">Loading. Please wait...</div>
-        <div class="span12" ng-repeat="link in links">
-          <p>
-            <br /><strong>{{date | date}}</strong>
-            <br />{{link.description}}
-            <br /><a ng-href="{{link.src}}">{{link.text}}</a>
-          </p>
+      <div class="panel">
+        <div class="panel-heading">
+          
+          <div ng-if="!mknum">Choose market</div>
+          <div ng-if="mknum && !links">Loading. Please wait...</div>
+          <div ng-if="links"><strong>Last updated {{date | date}}</strong></div>
+          
+        </div>
+        <div class="panel-body">
+          
+          <div class="list-group">
+            <div class="list-group-item row" ng-repeat="link in links">
+              
+              <div class="col-md-4"><a ng-href="{{link.src}}">{{link.text}}</a></div>
+              <div class="col-md-8 text-muted"><small>{{link.description}}</small></div>
+              
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
     <script src="/js/angular.min.js"></script>
     <script>
     /*global angular*/
@@ -45,13 +101,13 @@
     .controller('AppController', ['$scope', '$http',
       function AppController($scope, $http) {
         
-        function getLinks(key) {
+        function getLinks(key, mknum) {
           return new Promise(resolve => {
             let links = localStorage.getItem(key);
             if (links) {
               resolve(JSON.parse(links));
             } else {
-              $http.get('/api/v1/links').then(response => {
+              $http.get('/api/v1/links/' + mknum).then(response => {
                 localStorage.setItem(key, JSON.stringify(response.data.links));
                 resolve(response.data.links);
               });
@@ -59,13 +115,19 @@
           });
         }
         
-        let key = Math.floor(Date.now() / 4 /*hours*/ / 3600000);
-        getLinks(key).then(links => {
-          $scope.$evalAsync(() => {
-            $scope.links = links;
-            $scope.date = Date.now();  
+        $scope.mknum = 0;
+        
+        $scope.getLinks = function() {
+          $scope.links = null;
+          
+          let key = $scope.mknum + Math.floor(Date.now() / 4 /*hours*/ / 3600000);
+          getLinks(key, $scope.mknum).then(links => {
+            $scope.$evalAsync(() => {
+              $scope.links = links;
+              $scope.date = Date.now();  
+            });
           });
-        });
+        }
       }
     ]);
     </script>
