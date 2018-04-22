@@ -1,0 +1,67 @@
+<html ng-app>
+
+<head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta charset=utf-8 />
+    <title>Ticker gallery</title>
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .chart-container {
+            margin-bottom: 100px;
+        }
+    </style>
+    <script type="text/javascript">
+        function ctrl($scope){
+          $scope.rows = location.href.match(/tickers=(.*)/) &&  location.href.match(/tickers=(.*)/)[1].split(/[\,]/) || [];
+          
+          $scope.temp = false
+          
+          $scope.addRow = function(){
+            $scope.temp = false;
+            $scope.addName="";
+          };
+          
+          $scope.deleteRow = function(row){
+            $scope.rows.splice($scope.rows.indexOf(row),1);
+          };
+          
+          $scope.plural = function (tab){
+            return tab.length > 1 ? 's': ''; 
+          };
+          
+          $scope.addTemp = function(){
+            if($scope.temp) $scope.rows.pop(); 
+            else if($scope.addName) $scope.temp = true;
+            
+            if($scope.addName) $scope.rows.push($scope.addName);
+            else $scope.temp = false;
+          };
+          
+          $scope.isTemp = function(i){
+            return i==$scope.rows.length-1 && $scope.temp;
+          };
+          
+        }
+    </script>
+</head>
+
+<body ng-controller="ctrl">
+
+    <div class="row">
+        <div class="col-md-6 chart-container" ng-repeat="row in rows | filter : search">
+            <a ng-href="https://finviz.com/quote.ashx?t={{ row }}&ty=c&p=d&b=1">
+                <!--<img ng-src="http://stockcharts.com/c-sc/sc?s={{ row }}&p=D&b=5&g=0&i=0&r=1524547563691">-->
+                <img ng-src="http://stockcharts.com/c-sc/sc?s={{ row }}&p=D&b=5&g=0&i=p97843641945&r=1524549253678">
+                <!--<img ng-src="https://stockcharts.com/c-sc/sc?s={{ row }}&p=D&b=5&g=0&i=p40842066969">-->
+                <!--<img ng-src="https://stockcharts.com/c-sc/sc?s={{ row }}&p=W&b=5&g=0&i=p35867270011">-->
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>
