@@ -52,6 +52,7 @@ router.get('/api/v1/links/:mknum', function (req, res) {
       var resultFormatLong2 = 'https://finviz.com/screener.ashx?v=351&f=ipodate_more1,sh_avgvol_o750,ta_averagetruerange_o0.75,ta_sma200_pa,ta_sma50_sa200&ft=4&t={TICKERS}&o=-averagetruerange';
       var resultFormatShort = 'https://stocks2trade-dreaktor.c9users.io/gallery.html?tickers={TICKERS}';
       var resultFormatShort2 = 'https://finviz.com/screener.ashx?v=351&f=ipodate_more1,sh_avgvol_o750,ta_averagetruerange_o0.75,ta_sma200_pb,ta_sma50_sb200&ft=4&t={TICKERS}&o=-averagetruerange';
+      var resultFormat3 = 'https://trades.mindspace.ru/gallery?i=ch&ss={TICKERS}&sz=on&o=trend';
 
       res.send({
         links: [
@@ -61,6 +62,10 @@ router.get('/api/v1/links/:mknum', function (req, res) {
             description: winners.concat(losers).join(', '),
           },
           {
+            text: 'ALL - TMS',
+            src: resultFormat3.replace(/{TICKERS}/g,  winners.join(',')),
+          },
+          {
             text: 'LONG - Ticker gallery',
             src: resultFormatLong.replace(/{TICKERS}/g,  winners.join(',')),
             description: winners.join(', '),
@@ -68,7 +73,6 @@ router.get('/api/v1/links/:mknum', function (req, res) {
           {
             text: 'LONG - Finviz',
             src: resultFormatLong2.replace(/{TICKERS}/g,  winners.join(',')),
-            description: winners.join(', '),
           },
           {
             text: 'SHORT - Ticker gallery',
@@ -78,7 +82,6 @@ router.get('/api/v1/links/:mknum', function (req, res) {
           {
             text: 'SHORT - Finviz',
             src: resultFormatShort2.replace(/{TICKERS}/g,  losers.join(',')),
-            description: losers.join(', '),
           },
         ]
       });
