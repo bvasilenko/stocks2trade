@@ -48,9 +48,9 @@ router.get('/api/v1/links/:mknum', function (req, res) {
     ], function (losers) {
       
       var resultFormat = 'https://finviz.com/screener.ashx?v=351&f=ipodate_more1,sh_avgvol_o750,sh_price_o10,ta_averagetruerange_o0.75&ft=4&t={TICKERS}&o=-averagetruerange';
-      var resultFormatLong = 'https://stocks2trade-dreaktor.c9users.io/gallery.html?tickers={TICKERS}';
+      var resultFormatLong = 'https://stocks2trade.herokuapp.com/gallery.html?tickers={TICKERS}';
       var resultFormatLong2 = 'https://finviz.com/screener.ashx?v=351&f=ipodate_more1,sh_avgvol_o750,ta_averagetruerange_o0.75,ta_sma200_pa,ta_sma50_sa200&ft=4&t={TICKERS}&o=-averagetruerange';
-      var resultFormatShort = 'https://stocks2trade-dreaktor.c9users.io/gallery.html?tickers={TICKERS}';
+      var resultFormatShort = 'https://stocks2trade.herokuapp.com/gallery.html?tickers={TICKERS}';
       var resultFormatShort2 = 'https://finviz.com/screener.ashx?v=351&f=ipodate_more1,sh_avgvol_o750,ta_averagetruerange_o0.75,ta_sma200_pb,ta_sma50_sb200&ft=4&t={TICKERS}&o=-averagetruerange';
       var resultFormat3 = 'https://trades.mindspace.ru/gallery?i=ch&ss={TICKERS}&sz=on&o=trend';
 
